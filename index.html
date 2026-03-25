@@ -510,97 +510,480 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 /* ===== SQUAD PAGE ===== */
 .squad-content { padding:0 60px 100px; }
 .squad-emblem-section {
-  display:flex; align-items:center; gap:40px;
-  padding:50px; margin-bottom:50px;
-  background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(240,180,41,0.05));
-  border:1px solid var(--border-accent);
-  border-radius:24px;
-  position:relative; overflow:hidden;
+  position:relative;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:28px;
+  padding:36px 38px;
+  margin-bottom:24px;
+  border-radius:30px;
+  border:1px solid rgba(240,180,41,0.12);
+  background:
+    radial-gradient(circle at top right, rgba(240,180,41,0.14), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(139,92,246,0.12), transparent 26%),
+    linear-gradient(135deg, rgba(19,19,34,0.98), rgba(12,12,24,0.9));
+  overflow:hidden;
+  box-shadow:0 24px 80px rgba(0,0,0,0.28);
 }
 .squad-emblem-section::before {
-  content:''; position:absolute; right:-60px; top:-60px;
-  width:200px; height:200px; border-radius:50%;
-  background:radial-gradient(circle,rgba(240,180,41,0.1),transparent 70%);
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(120deg, transparent 0 40%, rgba(255,255,255,0.02) 50%, transparent 60%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 16px);
+  pointer-events:none;
 }
 .squad-emblem {
-  width:100px; height:100px; border-radius:50%;
-  background:linear-gradient(135deg,var(--gold),#b7791f);
+  width:112px; height:112px;
+  border-radius:28px;
+  background:
+    linear-gradient(135deg, rgba(240,180,41,0.94), rgba(181,125,31,0.92));
   display:flex; align-items:center; justify-content:center;
   font-family:'Orbitron',sans-serif;
-  font-size:22px; font-weight:900; color:#0a0a12;
-  box-shadow:var(--glow-gold);
-  flex-shrink:0;
+  font-size:26px; font-weight:900; color:#0a0a12;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.08) inset,
+    0 0 34px rgba(240,180,41,0.16);
+  position:relative;
+  z-index:1;
 }
+.squad-emblem::after {
+  content:'';
+  position:absolute;
+  inset:8px;
+  border-radius:22px;
+  border:1px solid rgba(10,10,18,0.14);
+}
+.squad-emblem-info,
+.squad-roster-side { position:relative; z-index:1; }
 .squad-emblem-info h3 {
   font-family:'Orbitron',sans-serif;
-  font-size:30px; font-weight:800; letter-spacing:3px;
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:3px;
 }
 .squad-emblem-info h3 .gold { color:var(--gold); }
 .squad-emblem-info p {
-  color:var(--text-secondary); margin-top:8px;
-  font-size:16px;
+  color:var(--text-secondary);
+  margin-top:10px;
+  font-size:15px;
+  max-width:720px;
+  line-height:1.75;
+}
+.squad-roster-side {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:12px;
+  min-width:210px;
+}
+.squad-official-badge {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(240,180,41,0.22);
+  background:rgba(240,180,41,0.08);
+  color:var(--gold);
+  font-family:'Orbitron',sans-serif;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:2.4px;
+  text-transform:uppercase;
+}
+.squad-side-stack {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:10px;
+}
+.squad-side-chip {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:9px 12px;
+  border-radius:999px;
+  border:1px solid var(--border-subtle);
+  background:rgba(255,255,255,0.035);
+  color:var(--text-secondary);
+  font-size:10px;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+}
+.squad-stats-row {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+  margin-bottom:30px;
+}
+.squad-stat-card {
+  position:relative;
+  padding:24px 24px 22px;
+  border-radius:22px;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg, rgba(19,19,34,0.98), rgba(14,14,28,0.88));
+  border:1px solid var(--border-subtle);
+  box-shadow:0 14px 44px rgba(0,0,0,0.18);
+}
+.squad-stat-card::before {
+  content:'';
+  position:absolute;
+  left:0; top:0; right:0;
+  height:2px;
+  background:linear-gradient(90deg, var(--accent), transparent 80%);
+}
+.squad-stat-card:nth-child(2)::before {
+  background:linear-gradient(90deg, var(--gold), transparent 80%);
+}
+.squad-stat-card:nth-child(3)::before {
+  background:linear-gradient(90deg, var(--cyan), transparent 80%);
+}
+.squad-stat-num {
+  display:block;
+  font-family:'Orbitron',sans-serif;
+  font-size:30px;
+  font-weight:900;
+  color:var(--text-primary);
+}
+.squad-stat-label {
+  display:block;
+  margin-top:8px;
+  font-size:11px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--text-muted);
+}
+.squad-groups {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:26px;
+  align-items:start;
+}
+.squad-group {
+  position:relative;
+  padding:30px;
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg, rgba(19,19,34,0.98), rgba(12,12,24,0.9));
+  border:1px solid rgba(255,255,255,0.05);
+  box-shadow:0 24px 70px rgba(0,0,0,0.22);
+  transition:transform 0.35s var(--transition), border-color 0.35s var(--transition), box-shadow 0.35s var(--transition);
+}
+.squad-group:hover {
+  transform:translateY(-4px);
+  box-shadow:0 28px 82px rgba(0,0,0,0.28);
+}
+.squad-group::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(circle at top right, rgba(139,92,246,0.09), transparent 34%);
+}
+.squad-group.main-team::before {
+  background:radial-gradient(circle at top right, rgba(240,180,41,0.12), transparent 34%);
+}
+.squad-group.main-team { border-color:rgba(240,180,41,0.12); }
+.squad-group.second-team { border-color:rgba(139,92,246,0.12); }
+.squad-group-watermark {
+  position:absolute;
+  right:20px;
+  top:14px;
+  font-family:'Orbitron',sans-serif;
+  font-size:74px;
+  line-height:1;
+  font-weight:900;
+  color:rgba(255,255,255,0.03);
+  pointer-events:none;
+  user-select:none;
+}
+.squad-group-head {
+  position:relative;
+  z-index:1;
+  margin-bottom:22px;
+}
+.squad-group-ribbon {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:12px;
+}
+.squad-group-kicker {
+  font-family:'Orbitron',sans-serif;
+  font-size:10px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--accent-light);
+}
+.squad-group.main-team .squad-group-kicker { color:var(--gold); }
+.squad-roster-stamp {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid var(--border-subtle);
+  background:rgba(255,255,255,0.03);
+  color:var(--text-secondary);
+  font-size:10px;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+}
+.squad-group-title {
+  font-family:'Orbitron',sans-serif;
+  font-size:24px;
+  font-weight:800;
+  line-height:1.25;
+  max-width:560px;
+}
+.squad-group-desc {
+  color:var(--text-secondary);
+  font-size:15px;
+  line-height:1.75;
+  margin-top:10px;
+}
+.squad-group-meta {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:18px;
+}
+.squad-chip {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border-subtle);
+  color:var(--text-secondary);
+  font-size:10px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.squad-group.main-team .squad-chip:first-child {
+  border-color:rgba(240,180,41,0.18);
+  color:var(--gold);
+  background:rgba(240,180,41,0.06);
+}
+.squad-group.second-team .squad-chip:first-child {
+  border-color:rgba(139,92,246,0.18);
+  color:var(--accent-light);
+  background:rgba(139,92,246,0.08);
 }
 .squad-grid {
-  display:grid; grid-template-columns:repeat(5,1fr);
-  gap:20px;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
 }
 .squad-card {
-  position:relative; text-align:center;
-  padding:40px 16px 30px;
-  background:var(--bg-card);
-  border:1px solid var(--border-subtle);
-  border-radius:20px;
-  transition:all 0.4s var(--transition);
+  position:relative;
+  padding:24px 18px 22px;
+  min-height:188px;
+  background:
+    linear-gradient(180deg, rgba(15,15,28,0.98), rgba(12,12,24,0.9));
+  border:1px solid rgba(255,255,255,0.05);
+  border-radius:22px;
   overflow:hidden;
+  transition:transform 0.35s var(--transition), border-color 0.35s var(--transition), box-shadow 0.35s var(--transition);
 }
-.squad-card::after {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(180deg,transparent 50%,rgba(139,92,246,0.04));
+.squad-card::before {
+  content:'';
+  position:absolute;
+  inset:0;
   pointer-events:none;
+  background:
+    linear-gradient(160deg, rgba(255,255,255,0.03), transparent 45%),
+    linear-gradient(180deg, transparent 48%, rgba(139,92,246,0.06));
+}
+.squad-group.main-team .squad-card::before {
+  background:
+    linear-gradient(160deg, rgba(255,255,255,0.03), transparent 45%),
+    linear-gradient(180deg, transparent 48%, rgba(240,180,41,0.05));
 }
 .squad-card:hover {
   transform:translateY(-6px);
   border-color:var(--border-accent);
-  box-shadow:0 20px 50px rgba(0,0,0,0.3);
+  box-shadow:0 22px 56px rgba(0,0,0,0.3);
 }
-.squad-card.captain {
-  border-color:rgba(240,180,41,0.25);
-  background:linear-gradient(180deg,var(--bg-card),rgba(240,180,41,0.03));
+.squad-card.leader-card {
+  grid-column:1 / -1;
+  min-height:auto;
+  padding:22px;
+  border-color:rgba(240,180,41,0.2);
+  background:
+    radial-gradient(circle at top right, rgba(240,180,41,0.14), transparent 34%),
+    linear-gradient(135deg, rgba(240,180,41,0.08), rgba(19,19,34,0.98));
 }
-.squad-card.captain:hover {
-  border-color:rgba(240,180,41,0.4);
-  box-shadow:0 20px 50px rgba(240,180,41,0.08);
+.squad-group.second-team .squad-card.leader-card {
+  border-color:rgba(139,92,246,0.22);
+  background:
+    radial-gradient(circle at top right, rgba(139,92,246,0.15), transparent 34%),
+    linear-gradient(135deg, rgba(139,92,246,0.10), rgba(19,19,34,0.98));
+}
+.squad-card.leader-card:hover {
+  border-color:rgba(240,180,41,0.34);
+}
+.squad-group.second-team .squad-card.leader-card:hover {
+  border-color:rgba(139,92,246,0.34);
+}
+.squad-member-no {
+  position:absolute;
+  top:14px;
+  left:16px;
+  font-family:'Orbitron',sans-serif;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:2px;
+  color:rgba(255,255,255,0.28);
+}
+.squad-member-status {
+  position:absolute;
+  top:14px;
+  right:14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.03);
+  color:var(--text-muted);
+  font-size:9px;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+}
+.squad-leader-top {
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:18px;
+}
+.squad-crown {
+  font-size:20px;
+  z-index:1;
+}
+.squad-card.leader-card .squad-crown {
+  position:static;
+}
+.squad-leader-badge {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:7px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--text-primary);
+}
+.squad-leader-body {
+  display:flex;
+  align-items:center;
+  gap:18px;
+  position:relative;
+  z-index:1;
 }
 .squad-avatar {
-  width:72px; height:72px; border-radius:50%;
-  margin:0 auto 16px;
-  display:flex; align-items:center; justify-content:center;
+  width:74px;
+  height:74px;
+  border-radius:22px;
+  margin:36px auto 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   font-family:'Orbitron',sans-serif;
-  font-size:24px; font-weight:800;
-  background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(75,0,130,0.08));
-  border:2px solid rgba(139,92,246,0.2);
-  position:relative; z-index:1;
+  font-size:24px;
+  font-weight:900;
+  background:linear-gradient(135deg,rgba(139,92,246,0.14),rgba(75,0,130,0.08));
+  border:1px solid rgba(139,92,246,0.22);
+  position:relative;
+  z-index:1;
+  box-shadow:0 10px 24px rgba(0,0,0,0.16);
 }
-.squad-card.captain .squad-avatar {
-  border-color:rgba(240,180,41,0.3);
-  background:linear-gradient(135deg,rgba(240,180,41,0.12),rgba(180,130,0,0.08));
-  box-shadow:0 0 20px rgba(240,180,41,0.15);
+.squad-group.main-team .squad-avatar {
+  background:linear-gradient(135deg,rgba(240,180,41,0.12),rgba(181,125,31,0.08));
+  border-color:rgba(240,180,41,0.2);
+}
+.squad-card.leader-card .squad-avatar {
+  width:88px;
+  height:88px;
+  margin:0;
+  flex-shrink:0;
+  font-size:28px;
+  border-radius:26px;
+  box-shadow:0 16px 36px rgba(0,0,0,0.22);
+}
+.squad-group.second-team .squad-card.leader-card .squad-avatar {
+  background:linear-gradient(135deg,rgba(139,92,246,0.16),rgba(75,0,130,0.08));
+  border-color:rgba(139,92,246,0.28);
 }
 .squad-name {
-  font-weight:700; font-size:15px;
-  letter-spacing:0.5px;
-  position:relative; z-index:1;
+  position:relative;
+  z-index:1;
+  text-align:center;
+  font-weight:800;
+  font-size:15px;
+  letter-spacing:0.3px;
+  overflow-wrap:anywhere;
+}
+.squad-card.leader-card .squad-name {
+  text-align:left;
+  font-size:21px;
 }
 .squad-role {
-  font-size:10px; letter-spacing:2px;
-  text-transform:uppercase; margin-top:6px;
-  position:relative; z-index:1;
+  position:relative;
+  z-index:1;
+  text-align:center;
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-top:8px;
+}
+.squad-card.leader-card .squad-role {
+  text-align:left;
 }
 .squad-role.cap { color:var(--gold); font-weight:700; }
+.squad-group.second-team .squad-role.cap { color:var(--accent-light); }
 .squad-role.mem { color:var(--text-muted); }
-.squad-crown {
-  position:absolute; top:12px; right:14px;
-  font-size:18px; z-index:2;
+.squad-leader-copy {
+  min-width:0;
+}
+.squad-leader-tags {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:12px;
+}
+.squad-mini-chip {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--text-primary);
+  font-size:9px;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+}
+.squad-leader-note {
+  margin-top:12px;
+  font-size:14px;
+  line-height:1.75;
+  color:var(--text-secondary);
 }
 
 /* ===== TEAM PAGE ===== */
@@ -817,17 +1200,25 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
     padding:0 30px 60px;
   }
   .about-layout { grid-template-columns:1fr; gap:40px; }
-  .squad-grid { grid-template-columns:repeat(3,1fr); }
+  .squad-groups { grid-template-columns:1fr; }
+  .squad-grid { grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
   .achieve-grid { grid-template-columns:repeat(2,1fr); }
   .hero-content { padding:0 30px; }
   .hero-franco-card { display:none; }
-  .squad-emblem-section { flex-direction:column; text-align:center; padding:36px; }
+  .squad-emblem-section { grid-template-columns:1fr; text-align:left; padding:34px; }
+  .squad-roster-side { align-items:flex-start; min-width:0; }
+  .squad-side-stack { justify-content:flex-start; }
   .site-footer { padding:30px; flex-direction:column; gap:10px; text-align:center; }
 }
 @media (max-width:640px) {
   .hero-stats-row { flex-direction:column; gap:20px; }
   .hero-cta-row { flex-direction:column; }
-  .squad-grid { grid-template-columns:1fr 1fr; }
+  .squad-stats-row { grid-template-columns:1fr; }
+  .squad-grid { grid-template-columns:1fr; }
+  .squad-group { padding:24px; }
+  .squad-group-ribbon { flex-direction:column; align-items:flex-start; }
+  .squad-leader-body { flex-direction:column; align-items:flex-start; }
+  .squad-card.leader-card .squad-name, .squad-card.leader-card .squad-role { text-align:left; }
   .team-grid { grid-template-columns:1fr; }
   .achieve-grid { grid-template-columns:1fr; }
   .platform-grid { grid-template-columns:1fr; }
@@ -1084,46 +1475,180 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 <div class="page-header-grid"></div>
 <div class="page-tag" id="pageSquadTag">L'Escouade</div>
 <h2 class="page-title" id="pageSquadTitle">Squad <span class="glow">BA7 Tayba Kda</span></h2>
-<p class="page-subtitle" id="pageSquadSubtitle">L'élite de Mobile Legends. Une équipe soudée, portée par la victoire et la stratégie collective.</p>
+<p class="page-subtitle" id="pageSquadSubtitle">Deux équipes complémentaires au sein de BA7, réunies par la stratégie, le niveau de jeu et l’esprit collectif.</p>
 </div>
 <div class="squad-content">
 <div class="squad-emblem-section">
 <div class="squad-emblem">BA7</div>
 <div class="squad-emblem-info">
 <h3>BA7 <span class="gold">TAYBA KDA</span></h3>
-<p id="squadIntro">Unis par la victoire — chaque membre apporte sa force et son expertise pour dominer les ranked games.</p>
+<p id="squadIntro">Deux line-ups au sein de la même squad — une équipe principale pilotée par Haritha, et une seconde équipe menée par Naroko.</p>
+</div>
+<div class="squad-roster-side">
+  <span class="squad-official-badge" id="squadOfficialBadge">Roster officiel</span>
+  <div class="squad-side-stack">
+    <span class="squad-side-chip" id="squadOfficialSeason">Saison 2026</span>
+    <span class="squad-side-chip" id="squadOfficialStatus">Line-ups actives</span>
+  </div>
 </div>
 </div>
-<div class="squad-grid">
-<div class="squad-card captain">
-<span class="squad-crown">👑</span>
-<div class="squad-avatar">N</div>
-<div class="squad-name">Naroko</div>
-<div class="squad-role cap" id="squadRole1">Capitaine</div>
+
+<div class="squad-stats-row">
+  <div class="squad-stat-card">
+    <span class="squad-stat-num">2</span>
+    <span class="squad-stat-label" id="squadStat1">Équipes actives</span>
+  </div>
+  <div class="squad-stat-card">
+    <span class="squad-stat-num">11</span>
+    <span class="squad-stat-label" id="squadStat2">Joueurs au total</span>
+  </div>
+  <div class="squad-stat-card">
+    <span class="squad-stat-num">2</span>
+    <span class="squad-stat-label" id="squadStat3">Managers / leaders</span>
+  </div>
 </div>
-<div class="squad-card">
-<div class="squad-avatar">A</div>
-<div class="squad-name">Amyuu.</div>
-<div class="squad-role mem" id="squadRole2">Membre</div>
+
+<div class="squad-groups">
+  <section class="squad-group main-team">
+    <div class="squad-group-watermark">01</div>
+    <div class="squad-group-head">
+      <div class="squad-group-ribbon">
+        <div class="squad-group-kicker" id="squadGroup1Kicker">Équipe principale</div>
+        <span class="squad-roster-stamp" id="squadGroup1Stamp">Roster 01</span>
+      </div>
+      <h3 class="squad-group-title" id="squadGroup1Title">Haritha The Boss. dirige l’équipe principale</h3>
+      <p class="squad-group-desc" id="squadGroup1Desc">Haritha est le chef de squad et le manager de l’équipe principale.</p>
+      <div class="squad-group-meta">
+        <span class="squad-chip" id="squadGroup1Chip1">Roster principal</span>
+        <span class="squad-chip" id="squadGroup1Chip2">6 membres</span>
+      </div>
+    </div>
+    <div class="squad-grid">
+      <div class="squad-card leader-card">
+        <div class="squad-member-no">01</div>
+        <div class="squad-leader-top">
+          <span class="squad-crown">👑</span>
+          <span class="squad-leader-badge" id="squadLeaderBadge1">Leadership</span>
+        </div>
+        <div class="squad-leader-body">
+          <div class="squad-avatar">H</div>
+          <div class="squad-leader-copy">
+            <div class="squad-name">Haritha The Boss.</div>
+            <div class="squad-role cap" id="squadRole1">Chef de squad • Manager</div>
+            <div class="squad-leader-tags">
+              <span class="squad-mini-chip" id="squadLeaderTag1A">Chef de squad</span>
+              <span class="squad-mini-chip" id="squadLeaderTag1B">Manager</span>
+            </div>
+            <div class="squad-leader-note" id="squadLeaderNote1">Pilote la line-up principale et supervise l’organisation de l’équipe.</div>
+          </div>
+        </div>
+      </div>
+      <div class="squad-card">
+        <span class="squad-member-no">02</span>
+        <span class="squad-member-status">Actif</span>
+        <div class="squad-avatar">D</div>
+        <div class="squad-name">Dina .ʚɞ.</div>
+        <div class="squad-role mem" id="squadRole2">Membre</div>
+      </div>
+      <div class="squad-card">
+        <span class="squad-member-no">03</span>
+        <span class="squad-member-status">Actif</span>
+        <div class="squad-avatar">ل</div>
+        <div class="squad-name">ل ي ب ش ر ش -_-</div>
+        <div class="squad-role mem" id="squadRole3">Membre</div>
+      </div>
+      <div class="squad-card">
+        <span class="squad-member-no">04</span>
+        <span class="squad-member-status">Actif</span>
+        <div class="squad-avatar">R</div>
+        <div class="squad-name">Rockykite</div>
+        <div class="squad-role mem" id="squadRole4">Membre</div>
+      </div>
+      <div class="squad-card">
+        <span class="squad-member-no">05</span>
+        <span class="squad-member-status">Actif</span>
+        <div class="squad-avatar">G</div>
+        <div class="squad-name">— Gryphon'</div>
+        <div class="squad-role mem" id="squadRole5">Membre</div>
+      </div>
+      <div class="squad-card">
+        <span class="squad-member-no">06</span>
+        <span class="squad-member-status">Actif</span>
+        <div class="squad-avatar">A</div>
+        <div class="squad-name">azeem</div>
+        <div class="squad-role mem" id="squadRole6">Membre</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="squad-group second-team">
+    <div class="squad-group-watermark">02</div>
+    <div class="squad-group-head">
+      <div class="squad-group-ribbon">
+        <div class="squad-group-kicker" id="squadGroup2Kicker">Deuxième équipe</div>
+        <span class="squad-roster-stamp" id="squadGroup2Stamp">Roster 02</span>
+      </div>
+      <h3 class="squad-group-title" id="squadGroup2Title">Naroko mène la seconde équipe</h3>
+      <p class="squad-group-desc" id="squadGroup2Desc">Naroko est le capitaine et le manager de la deuxième équipe.</p>
+      <div class="squad-group-meta">
+        <span class="squad-chip" id="squadGroup2Chip1">Line-up compétitive</span>
+        <span class="squad-chip" id="squadGroup2Chip2">5 membres</span>
+      </div>
+    </div>
+    <div class="squad-grid">
+      <div class="squad-card leader-card">
+        <div class="squad-member-no">01</div>
+        <div class="squad-leader-top">
+          <span class="squad-crown">👑</span>
+          <span class="squad-leader-badge" id="squadLeaderBadge2">Leadership</span>
+        </div>
+        <div class="squad-leader-body">
+          <div class="squad-avatar">N</div>
+          <div class="squad-leader-copy">
+            <div class="squad-name">Naroko</div>
+            <div class="squad-role cap" id="squadRole7">Capitaine • Manager</div>
+            <div class="squad-leader-tags">
+              <span class="squad-mini-chip" id="squadLeaderTag2A">Capitaine</span>
+              <span class="squad-mini-chip" id="squadLeaderTag2B">Manager</span>
+            </div>
+            <div class="squad-leader-note" id="squadLeaderNote2">Dirige la deuxième équipe et donne le tempo sur la partie compétitive.</div>
+          </div>
+        </div>
+      </div>
+      <div class="squad-card">
+        <span class="squad-member-no">02</span>
+        <span class="squad-member-status">Actif</span>
+        <div class="squad-avatar">A</div>
+        <div class="squad-name">Amyuu.</div>
+        <div class="squad-role mem" id="squadRole8">Membre</div>
+      </div>
+      <div class="squad-card">
+        <span class="squad-member-no">03</span>
+        <span class="squad-member-status">Actif</span>
+        <div class="squad-avatar">S</div>
+        <div class="squad-name">Skip Romania.</div>
+        <div class="squad-role mem" id="squadRole9">Membre</div>
+      </div>
+      <div class="squad-card">
+        <span class="squad-member-no">04</span>
+        <span class="squad-member-status">Actif</span>
+        <div class="squad-avatar">P</div>
+        <div class="squad-name">Princè Aizenn !!!</div>
+        <div class="squad-role mem" id="squadRole10">Membre</div>
+      </div>
+      <div class="squad-card">
+        <span class="squad-member-no">05</span>
+        <span class="squad-member-status">Actif</span>
+        <div class="squad-avatar">P</div>
+        <div class="squad-name">Pacifica</div>
+        <div class="squad-role mem" id="squadRole11">Membre</div>
+      </div>
+    </div>
+  </section>
 </div>
-<div class="squad-card">
-<div class="squad-avatar">S</div>
-<div class="squad-name">Skip Romania.</div>
-<div class="squad-role mem" id="squadRole3">Membre</div>
-</div>
-<div class="squad-card">
-<div class="squad-avatar">P</div>
-<div class="squad-name">Princè Aizenn !!!</div>
-<div class="squad-role mem" id="squadRole4">Membre</div>
-</div>
-<div class="squad-card">
-<div class="squad-avatar">P</div>
-<div class="squad-name">Pacifica</div>
-<div class="squad-role mem" id="squadRole5">Membre</div>
 </div>
 </div>
-</div>
-</div>
+
 <!-- ===== TEAM ===== -->
 <div class="page" id="page-team">
 <div class="page-header-section">
@@ -1252,9 +1777,29 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
       ],
       squadTag: "L'Escouade",
       squadTitle: 'Squad <span class="glow">BA7 Tayba Kda</span>',
-      squadSubtitle: "L'élite de Mobile Legends. Une équipe soudée, portée par la victoire et la stratégie collective.",
-      squadIntro: 'Unis par la victoire — chaque membre apporte sa force et son expertise pour dominer les ranked games.',
-      squadRoles: ['Capitaine', 'Membre', 'Membre', 'Membre', 'Membre'],
+      squadSubtitle: 'Deux équipes complémentaires au sein de BA7, réunies par la stratégie, le niveau de jeu et l’esprit collectif.',
+      squadIntro: 'Deux line-ups au sein de la même squad — une équipe principale pilotée par Haritha, et une seconde équipe menée par Naroko.',
+      squadOfficialBadge: 'Roster officiel',
+      squadOfficialSeason: 'Saison 2026',
+      squadOfficialStatus: 'Line-ups actives',
+      squadStats: ['Équipes actives', 'Joueurs au total', 'Managers / leaders'],
+      squadGroup1Kicker: 'Équipe principale',
+      squadGroup1Title: 'Haritha The Boss. dirige l’équipe principale',
+      squadGroup1Desc: 'Haritha est le chef de squad et le manager de l’équipe principale.',
+      squadGroup1Chips: ['Roster principal', '6 membres'],
+      squadGroupStamps: ['Roster 01', 'Roster 02'],
+      squadLeaderBadge1: 'Leadership',
+      squadLeaderTags1: ['Chef de squad', 'Manager'],
+      squadLeaderNote1: 'Pilote la line-up principale et supervise l’organisation de l’équipe.',
+      squadGroup2Kicker: 'Deuxième équipe',
+      squadGroup2Title: 'Naroko mène la seconde équipe',
+      squadGroup2Desc: 'Naroko est le capitaine et le manager de la deuxième équipe.',
+      squadGroup2Chips: ['Line-up compétitive', '5 membres'],
+      squadLeaderBadge2: 'Leadership',
+      squadLeaderTags2: ['Capitaine', 'Manager'],
+      squadLeaderNote2: 'Dirige la deuxième équipe et donne le tempo sur la partie compétitive.',
+      squadMemberStatus: 'Actif',
+      squadRoles: ['Chef de squad • Manager', 'Membre', 'Membre', 'Membre', 'Membre', 'Membre', 'Capitaine • Manager', 'Membre', 'Membre', 'Membre', 'Membre'],
       teamTag: 'Modération',
       teamTitle: 'L\'Équipe <span class="glow">Naroko</span>',
       teamSubtitle: 'Les modérateurs qui veillent sur la communauté et garantissent une expérience de qualité sur chaque stream.',
@@ -1316,9 +1861,29 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
       ],
       squadTag: 'The Squad',
       squadTitle: 'Squad <span class="glow">BA7 Tayba Kda</span>',
-      squadSubtitle: 'The elite of Mobile Legends. A united team driven by victory and collective strategy.',
-      squadIntro: 'United by victory — each member brings strength and expertise to dominate ranked games.',
-      squadRoles: ['Captain', 'Member', 'Member', 'Member', 'Member'],
+      squadSubtitle: 'Two complementary teams inside BA7, united by strategy, level of play, and collective spirit.',
+      squadIntro: 'Two lineups inside the same squad — a main team led by Haritha, and a second team led by Naroko.',
+      squadOfficialBadge: 'Official roster',
+      squadOfficialSeason: 'Season 2026',
+      squadOfficialStatus: 'Active lineups',
+      squadStats: ['Active teams', 'Total players', 'Managers / leaders'],
+      squadGroup1Kicker: 'Main team',
+      squadGroup1Title: 'Haritha The Boss. leads the main team',
+      squadGroup1Desc: 'Haritha is the squad chief and manager of the main team.',
+      squadGroup1Chips: ['Main roster', '6 members'],
+      squadGroupStamps: ['Roster 01', 'Roster 02'],
+      squadLeaderBadge1: 'Leadership',
+      squadLeaderTags1: ['Squad Chief', 'Manager'],
+      squadLeaderNote1: 'Leads the main lineup and oversees the organization of the team.',
+      squadGroup2Kicker: 'Second team',
+      squadGroup2Title: 'Naroko leads the second team',
+      squadGroup2Desc: 'Naroko is the captain and manager of the second team.',
+      squadGroup2Chips: ['Competitive lineup', '5 members'],
+      squadLeaderBadge2: 'Leadership',
+      squadLeaderTags2: ['Captain', 'Manager'],
+      squadLeaderNote2: 'Leads the second team and sets the pace for the competitive side.',
+      squadMemberStatus: 'Active',
+      squadRoles: ['Squad Chief • Manager', 'Member', 'Member', 'Member', 'Member', 'Member', 'Captain • Manager', 'Member', 'Member', 'Member', 'Member'],
       teamTag: 'Moderation',
       teamTitle: 'The <span class="glow">Naroko</span> Team',
       teamSubtitle: 'Moderators who watch over the community and ensure a quality experience on every stream.',
@@ -1348,6 +1913,10 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
   function setHTML(id, value) {
     const el = document.getElementById(id);
     if (el) el.innerHTML = value;
+  }
+
+  function setTextAll(selector, value) {
+    document.querySelectorAll(selector).forEach(el => { el.textContent = value; });
   }
 
   function readCache() {
@@ -1489,6 +2058,45 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
     setHTML('pageSquadTitle', t.squadTitle);
     setText('pageSquadSubtitle', t.squadSubtitle);
     setText('squadIntro', t.squadIntro);
+    setText('squadOfficialBadge', t.squadOfficialBadge);
+    setText('squadOfficialSeason', t.squadOfficialSeason);
+    setText('squadOfficialStatus', t.squadOfficialStatus);
+    if (t.squadStats) {
+      setText('squadStat1', t.squadStats[0]);
+      setText('squadStat2', t.squadStats[1]);
+      setText('squadStat3', t.squadStats[2]);
+    }
+    setText('squadGroup1Kicker', t.squadGroup1Kicker);
+    setText('squadGroup1Title', t.squadGroup1Title);
+    setText('squadGroup1Desc', t.squadGroup1Desc);
+    if (t.squadGroup1Chips) {
+      setText('squadGroup1Chip1', t.squadGroup1Chips[0]);
+      setText('squadGroup1Chip2', t.squadGroup1Chips[1]);
+    }
+    if (t.squadGroupStamps) {
+      setText('squadGroup1Stamp', t.squadGroupStamps[0]);
+      setText('squadGroup2Stamp', t.squadGroupStamps[1]);
+    }
+    setText('squadLeaderBadge1', t.squadLeaderBadge1);
+    if (t.squadLeaderTags1) {
+      setText('squadLeaderTag1A', t.squadLeaderTags1[0]);
+      setText('squadLeaderTag1B', t.squadLeaderTags1[1]);
+    }
+    setText('squadLeaderNote1', t.squadLeaderNote1);
+    setText('squadGroup2Kicker', t.squadGroup2Kicker);
+    setText('squadGroup2Title', t.squadGroup2Title);
+    setText('squadGroup2Desc', t.squadGroup2Desc);
+    if (t.squadGroup2Chips) {
+      setText('squadGroup2Chip1', t.squadGroup2Chips[0]);
+      setText('squadGroup2Chip2', t.squadGroup2Chips[1]);
+    }
+    setText('squadLeaderBadge2', t.squadLeaderBadge2);
+    if (t.squadLeaderTags2) {
+      setText('squadLeaderTag2A', t.squadLeaderTags2[0]);
+      setText('squadLeaderTag2B', t.squadLeaderTags2[1]);
+    }
+    setText('squadLeaderNote2', t.squadLeaderNote2);
+    setTextAll('.squad-member-status', t.squadMemberStatus);
     t.squadRoles.forEach((value, index) => setText(`squadRole${index + 1}`, value));
 
     setText('pageTeamTag', t.teamTag);
