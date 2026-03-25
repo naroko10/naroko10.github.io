@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
-
 <html lang="fr">
 <head>
 <meta charset="utf-8"/>
@@ -42,6 +40,10 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
+body.lang-pending { overflow:hidden; }
+body.lang-pending .app { opacity:0; visibility:hidden; }
+body.lang-pending .page { transition:none !important; }
+body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ease; }
 
 /* ===== LOADER ===== */
 .loader {
@@ -49,6 +51,7 @@ body {
   background: var(--bg-deep);
   display:flex; align-items:center; justify-content:center; flex-direction:column;
   transition: opacity 0.8s ease, visibility 0.8s ease;
+  will-change: opacity, visibility;
 }
 .loader.done { opacity:0; visibility:hidden; pointer-events:none; }
 .loader-logo {
@@ -834,7 +837,8 @@ body {
 }
 </style>
 </head>
-<body>
+<body class="lang-pending">
+<noscript><style>body.lang-pending .app{opacity:1!important;visibility:visible!important;}body.lang-pending #loader{display:none!important;}</style></noscript>
 <!-- LOADER -->
 <div class="loader" id="loader">
 <div class="loader-logo">NAROKO</div>
@@ -1201,6 +1205,9 @@ body {
 (function () {
   const GEO_CACHE_KEY = 'naroko_geo_country_cache_v1';
   const GEO_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+  const MIN_LOADER_MS = 1100;
+  window.__minLoaderMs = MIN_LOADER_MS;
+  window.__bootStartedAt = performance.now();
 
   const translations = {
     fr: {
@@ -1215,7 +1222,7 @@ body {
         platforms: 'Réseaux'
       },
       heroBadge: 'Top 1 Global — Franco',
-      heroDesc: 'Streamer sur TikTok &amp; YouTube. Top 1 mondial avec Franco. Capitaine de la squad <strong style="color:var(--gold)">BA7 Tayba Kda</strong>.',
+      heroDesc: 'Streamer sur TikTok &amp; YouTube. Top 1 mondial avec Franco. 666 étoiles. Capitaine de la squad <strong style="color:var(--gold)">BA7 Tayba Kda</strong>.',
       heroStat1: 'Global Franco',
       heroStat2: 'Stars Max',
       heroStat3: 'Squad',
@@ -1279,7 +1286,7 @@ body {
         platforms: 'Platforms'
       },
       heroBadge: 'Top 1 Global — Franco',
-      heroDesc: 'Streamer on TikTok &amp; YouTube. World #1 Franco. Captain of the <strong style="color:var(--gold)">BA7 Tayba Kda</strong> squad.',
+      heroDesc: 'Streamer on TikTok &amp; YouTube. World #1 Franco. 666 stars. Captain of the <strong style="color:var(--gold)">BA7 Tayba Kda</strong> squad.',
       heroStat1: 'Global Franco',
       heroStat2: 'Max Stars',
       heroStat3: 'Squad',
@@ -1367,6 +1374,33 @@ body {
     }
   }
 
+  function countryCodeToLanguage(countryCode) {
+    if (countryCode === 'FR') return 'fr';
+    return countryCode ? 'en' : null;
+  }
+
+  function getCachedLanguage() {
+    return countryCodeToLanguage(readCache());
+  }
+
+  async function fetchJsonWithTimeout(url, timeoutMs = 1600) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        signal: controller.signal
+      });
+      if (!response.ok) return null;
+      return await response.json();
+    } catch (error) {
+      return null;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
   async function fetchCountryCode() {
     const cached = readCache();
     if (cached) return cached;
@@ -1383,20 +1417,12 @@ body {
     ];
 
     for (const provider of providers) {
-      try {
-        const response = await fetch(provider.url, {
-          method: 'GET',
-          headers: { Accept: 'application/json' }
-        });
-        if (!response.ok) continue;
-        const data = await response.json();
-        const countryCode = provider.parse(data);
-        if (countryCode) {
-          writeCache(countryCode);
-          return countryCode;
-        }
-      } catch (error) {
-        // try next provider
+      const data = await fetchJsonWithTimeout(provider.url);
+      if (!data) continue;
+      const countryCode = provider.parse(data);
+      if (countryCode) {
+        writeCache(countryCode);
+        return countryCode;
       }
     }
 
@@ -1483,11 +1509,22 @@ body {
   }
 
   async function initLocalization() {
+    const cachedCountryCode = readCache();
+    const cachedLanguage = countryCodeToLanguage(cachedCountryCode);
+
+    if (cachedLanguage) {
+      applyLanguage(cachedLanguage);
+      window.__siteCountryCode = cachedCountryCode;
+      window.__siteLanguage = cachedLanguage;
+      return cachedLanguage;
+    }
+
     const countryCode = await fetchCountryCode();
-    const lang = countryCode === 'FR' ? 'fr' : (countryCode ? 'en' : fallbackLanguage());
+    const lang = countryCodeToLanguage(countryCode) || fallbackLanguage();
     applyLanguage(lang);
     window.__siteCountryCode = countryCode;
     window.__siteLanguage = lang;
+    return lang;
   }
 
   window.__localizationReadyPromise = initLocalization();
@@ -1502,7 +1539,7 @@ document.getElementById('aboutFrancoImg').src = FRANCO_IMG;
 document.getElementById('achieveBg').style.backgroundImage = `url(${FRANCO_IMG})`;
 
 // === LOADER ===
-window.addEventListener('load', async () => {
+async function finishBoot() {
   try {
     if (window.__localizationReadyPromise) {
       await window.__localizationReadyPromise;
@@ -1510,8 +1547,36 @@ window.addEventListener('load', async () => {
   } catch (error) {
     console.warn('Localization wait failed:', error);
   }
-  setTimeout(() => document.getElementById('loader').classList.add('done'), 1000);
+
+  const startedAt = window.__bootStartedAt || performance.now();
+  const elapsed = performance.now() - startedAt;
+  const remaining = Math.max(0, (window.__minLoaderMs || 1100) - elapsed);
+
+  if (remaining > 0) {
+    await new Promise(resolve => setTimeout(resolve, remaining));
+  }
+
+  document.body.classList.remove('lang-pending');
+  document.body.classList.add('lang-ready');
+
+  requestAnimationFrame(() => {
+    const loader = document.getElementById('loader');
+    if (loader) loader.classList.add('done');
+  });
+}
+
+window.addEventListener('load', () => {
+  finishBoot();
 });
+
+setTimeout(() => {
+  if (document.body.classList.contains('lang-pending')) {
+    document.body.classList.remove('lang-pending');
+    document.body.classList.add('lang-ready');
+    const loader = document.getElementById('loader');
+    if (loader) loader.classList.add('done');
+  }
+}, 5000);
 
 // === NAVIGATION ===
 function navigateTo(pageId) {
