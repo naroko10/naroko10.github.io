@@ -1229,9 +1229,274 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
   .achieve-rank { font-size:72px; }
   .about-features { grid-template-columns:1fr; }
 }
+
+
+/* ========== PREMIUM ANIMATIONS ========== */
+
+/* --- Scroll Progress Bar --- */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; width: 0%; height: 3px; z-index: 10001;
+  background: linear-gradient(90deg, var(--accent), var(--gold), var(--cyan));
+  box-shadow: 0 0 12px rgba(139,92,246,0.6), 0 0 30px rgba(240,180,41,0.3);
+  transition: width 0.05s linear;
+  will-change: width;
+}
+
+/* --- Custom Cursor removed: normal browser cursor kept --- */
+
+/* --- Film Grain / Noise Overlay --- */
+.noise-overlay {
+  position: fixed; inset: 0; z-index: 9998; pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  will-change: transform;
+  animation: grain-shift 0.5s steps(3) infinite;
+}
+@keyframes grain-shift {
+  0% { transform: translate(0,0); }
+  33% { transform: translate(-2px,1px); }
+  66% { transform: translate(1px,-1px); }
+  100% { transform: translate(0,0); }
+}
+
+/* --- Scroll Reveal Animations --- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+[data-reveal="left"] { transform: translateX(-60px); }
+[data-reveal="right"] { transform: translateX(60px); }
+[data-reveal="scale"] { transform: scale(0.88); }
+[data-reveal="up"] { transform: translateY(50px); }
+[data-reveal].revealed {
+  opacity: 1 !important;
+  transform: translate(0,0) scale(1) !important;
+}
+
+/* --- Stagger Children --- */
+[data-stagger] > * {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-stagger].revealed > *:nth-child(1) { transition-delay: 0.05s; }
+[data-stagger].revealed > *:nth-child(2) { transition-delay: 0.12s; }
+[data-stagger].revealed > *:nth-child(3) { transition-delay: 0.19s; }
+[data-stagger].revealed > *:nth-child(4) { transition-delay: 0.26s; }
+[data-stagger].revealed > *:nth-child(5) { transition-delay: 0.33s; }
+[data-stagger].revealed > *:nth-child(6) { transition-delay: 0.40s; }
+[data-stagger].revealed > *:nth-child(7) { transition-delay: 0.47s; }
+[data-stagger].revealed > *:nth-child(8) { transition-delay: 0.54s; }
+[data-stagger].revealed > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Shimmer Effect on Cards --- */
+.achieve-card::after,
+.squad-card::after,
+.mod-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(139,92,246,0.06) 45%,
+    rgba(255,255,255,0.04) 50%,
+    rgba(139,92,246,0.06) 55%,
+    transparent 70%
+  );
+  transform: translateX(-110%);
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none; border-radius: inherit;
+}
+.achieve-card:hover::after,
+.squad-card:hover::after,
+.mod-card:hover::after {
+  transform: translateX(110%);
+}
+
+/* --- Glowing Border on Hero Achievement Card --- */
+.achieve-hero-card {
+  position: relative;
+  overflow: visible;
+}
+.achieve-hero-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--accent), var(--gold), var(--cyan), var(--accent));
+  background-size: 300% 300%;
+  z-index: -1;
+  animation: glow-rotate 4s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.achieve-hero-card:hover::before {
+  opacity: 1;
+}
+@keyframes glow-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* --- Enhanced Sidebar Hover --- */
+.nav-link::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 0; background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0; transition: width 0.4s ease, opacity 0.4s ease;
+  border-radius: 0 6px 6px 0;
+}
+.nav-link:hover::before,
+.nav-link.active::before {
+  width: 100%; opacity: 0.06;
+}
+
+/* --- Magnetic Button Visual Feedback --- */
+.cta-btn {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  will-change: transform;
+}
+
+/* --- 3D Tilt on Cards --- */
+.squad-card,
+.platform-card {
+  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+  transform-style: preserve-3d;
+  perspective: 800px;
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent-dark), var(--accent));
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent-light); }
+
+/* --- Hero Name Text Glow --- */
+.hero-name {
+  animation: text-glow 3s ease-in-out infinite alternate;
+}
+@keyframes text-glow {
+  0% {
+    text-shadow: 0 0 10px rgba(139,92,246,0.3), 0 0 30px rgba(139,92,246,0.15);
+  }
+  100% {
+    text-shadow: 0 0 20px rgba(139,92,246,0.5), 0 0 50px rgba(139,92,246,0.2), 0 0 80px rgba(240,180,41,0.1);
+  }
+}
+
+/* --- Parallax Hero Background --- */
+.hero-bg {
+  will-change: transform;
+  transition: transform 0.1s linear;
+}
+
+/* --- Floating Badge Animation --- */
+.hero-badge {
+  animation: float-badge 4s ease-in-out infinite;
+}
+@keyframes float-badge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* --- Enhanced Loader --- */
+.loader {
+  background: radial-gradient(ellipse at center, rgba(20,20,40,1) 0%, var(--bg-deep) 70%);
+}
+.loader-logo {
+  position: relative;
+}
+.loader-logo::after {
+  content: '';
+  position: absolute;
+  bottom: -8px; left: 10%; right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: underline-pulse 1.5s ease-in-out infinite;
+}
+@keyframes underline-pulse {
+  0%, 100% { opacity: 0.3; transform: scaleX(0.6); }
+  50% { opacity: 1; transform: scaleX(1); }
+}
+
+/* --- Page Transition Enhancements --- */
+.page {
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.page:not(.active) {
+  transform: translateY(20px) scale(0.98);
+}
+.page.active {
+  transform: translateY(0) scale(1);
+}
+
+/* --- Counter Number Animation Enhancement --- */
+.counter-value {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+.counter-value.counting {
+  animation: counter-bump 0.1s ease;
+}
+@keyframes counter-bump {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* --- Smooth hover for all interactive elements --- */
+a, button, .nav-link, .lang-btn, .achieve-card, .squad-card, .platform-card, .mod-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Glass morphism enhancement for sidebar --- */
+.sidebar {
+  background: rgba(10,10,18,0.88) !important;
+  backdrop-filter: blur(32px) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(1.4) !important;
+}
+
+/* --- Section Divider Lines --- */
+.page-title::after {
+  content: '';
+  display: block;
+  width: 60px; height: 3px;
+  margin-top: 16px;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  border-radius: 3px;
+  animation: divider-expand 1s ease forwards;
+  transform-origin: left;
+}
+@keyframes divider-expand {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
 </style>
 </head>
 <body class="lang-pending">
+
+<!-- PREMIUM: Scroll Progress Bar -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- PREMIUM: Custom Cursor -->
+<!-- PREMIUM: Noise/Grain Overlay -->
+<div class="noise-overlay"></div>
+
 <noscript><style>body.lang-pending .app{opacity:1!important;visibility:visible!important;}body.lang-pending #loader{display:none!important;}</style></noscript>
 <!-- LOADER -->
 <div class="loader" id="loader">
@@ -1356,17 +1621,17 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 <div class="page-header-bg"></div>
 <div class="page-header-grid"></div>
 <div class="page-tag" id="pageAboutTag">Le joueur</div>
-<h2 class="page-title" id="pageAboutTitle">À propos de <span class="glow">Naroko</span></h2>
+<h2 class="page-title" id="pageAboutTitle" data-reveal="left">À propos de <span class="glow">Naroko</span></h2>
 <p class="page-subtitle" id="pageAboutSubtitle">Découvrez le parcours du joueur qui a conquis le classement mondial avec Franco sur Mobile Legends: Bang Bang.</p>
 </div>
 <div class="about-layout">
-<div class="about-image-block">
+<div class="about-image-block" data-reveal="left">
 <div class="about-img-hover">
 <img alt="Franco Legend Skin" class="about-img" id="aboutFrancoImg"/>
 </div>
 <div class="about-img-overlay" id="aboutOverlay">TOP 1 GLOBAL</div>
 </div>
-<div class="about-text-block">
+<div class="about-text-block" data-reveal="right">
 <h3 id="aboutHeading">Le maître incontesté de <span style="color:var(--gold)">Franco</span></h3>
 <p id="aboutParagraph1">
           Naroko n'est pas un simple joueur — c'est une légende vivante de Mobile Legends: Bang Bang.
@@ -1380,7 +1645,7 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
           <strong style="color:var(--gold)">BA7 Tayba Kda</strong>, il mène son équipe
           avec vision et leadership.
         </p>
-<div class="about-features">
+<div class="about-features" data-reveal="up" data-stagger>
 <div class="about-feature">
 <div class="about-feature-icon">🎯</div>
 <div class="about-feature-text" id="aboutFeature1">Hooks légendaires</div>
@@ -1415,11 +1680,11 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 <div class="page-header-bg"></div>
 <div class="page-header-grid"></div>
 <div class="page-tag" id="pageAchievementsTag">Records</div>
-<h2 class="page-title" id="pageAchievementsTitle">Palmarès <span class="glow">Légendaire</span></h2>
+<h2 class="page-title" id="pageAchievementsTitle" data-reveal="left">Palmarès <span class="glow">Légendaire</span></h2>
 <p class="page-subtitle" id="pageAchievementsSubtitle">Les records et accomplissements qui font de Naroko une référence mondiale sur Franco.</p>
 </div>
 <div class="achieve-content">
-<div class="achieve-hero-card">
+<div class="achieve-hero-card" data-reveal="scale">
 <div class="achieve-hero-bg" id="achieveBg"></div>
 <div class="achieve-hero-overlay"></div>
 <div class="achieve-hero-inner">
@@ -1431,7 +1696,7 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 </div>
 </div>
 </div>
-<div class="achieve-grid">
+<div class="achieve-grid" data-reveal="up" data-stagger>
 <div class="achieve-card">
 <span class="achieve-card-icon">👑</span>
 <div class="achieve-card-value gold">#1</div>
@@ -1477,7 +1742,7 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 <div class="page-header-bg"></div>
 <div class="page-header-grid"></div>
 <div class="page-tag" id="pageSquadTag">L'Escouade</div>
-<h2 class="page-title" id="pageSquadTitle">Squad <span class="glow">BA7 Tayba Kda</span></h2>
+<h2 class="page-title" id="pageSquadTitle" data-reveal="left">Squad <span class="glow">BA7 Tayba Kda</span></h2>
 <p class="page-subtitle" id="pageSquadSubtitle">Deux équipes complémentaires au sein de BA7, réunies par la stratégie, le niveau de jeu et l’esprit collectif.</p>
 </div>
 <div class="squad-content">
@@ -1658,11 +1923,11 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 <div class="page-header-bg"></div>
 <div class="page-header-grid"></div>
 <div class="page-tag" id="pageTeamTag">Modération</div>
-<h2 class="page-title" id="pageTeamTitle">L'Équipe <span class="glow">Naroko</span></h2>
+<h2 class="page-title" id="pageTeamTitle" data-reveal="left">L'Équipe <span class="glow">Naroko</span></h2>
 <p class="page-subtitle" id="pageTeamSubtitle">Les modérateurs qui veillent sur la communauté et garantissent une expérience de qualité sur chaque stream.</p>
 </div>
 <div class="team-content">
-<div class="team-grid">
+<div class="team-grid" data-reveal="up" data-stagger>
 <div class="mod-card">
 <div class="mod-avatar">É</div>
 <div class="mod-name">Élite</div>
@@ -1690,11 +1955,11 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 <div class="page-header-bg"></div>
 <div class="page-header-grid"></div>
 <div class="page-tag" id="pagePlatformsTag">Social</div>
-<h2 class="page-title" id="pagePlatformsTitle">Mes <span class="glow">Plateformes</span></h2>
+<h2 class="page-title" id="pagePlatformsTitle" data-reveal="left">Mes <span class="glow">Plateformes</span></h2>
 <p class="page-subtitle" id="pagePlatformsSubtitle">Rejoins la communauté Naroko — retrouve les streams, highlights et contenus exclusifs.</p>
 </div>
 <div class="platforms-content">
-<div class="platform-grid">
+<div class="platform-grid" data-reveal="up" data-stagger>
 <a class="platform-card tt" href="https://www.tiktok.com/@naroko10" target="_blank">
 <div class="platform-icon">
 <svg viewbox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.97a8.35 8.35 0 004.76 1.49V7.01a4.85 4.85 0 01-1-.32z"></path></svg>
@@ -2284,6 +2549,118 @@ navigateTo = function(pageId) {
     });
   }, 500);
 };
+
+
+// ========== PREMIUM ANIMATIONS ==========
+
+// --- Scroll Progress Bar ---
+(function() {
+  const bar = document.getElementById('scrollProgress');
+  if (!bar) return;
+  window.addEventListener('scroll', function() {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = Math.min(pct, 100) + '%';
+  }, { passive: true });
+})();
+
+// --- Scroll Reveal (IntersectionObserver) ---
+(function() {
+  const revealEls = document.querySelectorAll('[data-reveal], [data-stagger]');
+  if (!revealEls.length) return;
+  const obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(function(el) { obs.observe(el); });
+})();
+
+// --- Enhanced Particle System ---
+(function() {
+  const container = document.getElementById('heroParticles');
+  if (!container) return;
+  container.innerHTML = '';
+  const colors = ['rgba(139,92,246,0.4)', 'rgba(240,180,41,0.3)', 'rgba(6,214,160,0.3)', 'rgba(255,255,255,0.15)'];
+  for (let i = 0; i < 35; i++) {
+    const p = document.createElement('div');
+    p.className = 'hero-particle';
+    const size = 1.5 + Math.random() * 3.5;
+    p.style.cssText =
+      'width:' + size + 'px;height:' + size + 'px;' +
+      'left:' + Math.random() * 100 + '%;' +
+      'top:' + Math.random() * 100 + '%;' +
+      'background:' + colors[Math.floor(Math.random() * colors.length)] + ';' +
+      'animation-duration:' + (8 + Math.random() * 18) + 's;' +
+      'animation-delay:' + (Math.random() * 6) + 's;' +
+      'opacity:' + (0.2 + Math.random() * 0.5) + ';';
+    container.appendChild(p);
+  }
+})();
+
+// --- Magnetic Button Effect ---
+(function() {
+  document.querySelectorAll('.cta-btn').forEach(function(btn) {
+    btn.addEventListener('mousemove', function(e) {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = 'translate(' + (x * 0.15) + 'px, ' + (y * 0.15) + 'px)';
+    });
+    btn.addEventListener('mouseleave', function() {
+      btn.style.transform = 'translate(0, 0)';
+    });
+  });
+})();
+
+// --- Parallax Hero Background ---
+(function() {
+  const heroBg = document.querySelector('.hero-bg');
+  if (!heroBg) return;
+  window.addEventListener('scroll', function() {
+    const scrollY = window.pageYOffset;
+    heroBg.style.transform = 'translateY(' + (scrollY * 0.25) + 'px) scale(1.1)';
+  }, { passive: true });
+})();
+
+// --- 3D Tilt on hover for cards ---
+(function() {
+  document.querySelectorAll('.squad-card, .platform-card').forEach(function(card) {
+    card.addEventListener('mousemove', function(e) {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = 'perspective(800px) rotateY(' + (x * 8) + 'deg) rotateX(' + (-y * 8) + 'deg) scale(1.02)';
+    });
+    card.addEventListener('mouseleave', function() {
+      card.style.transform = 'perspective(800px) rotateY(0) rotateX(0) scale(1)';
+    });
+  });
+})();
+
+// --- Smooth counter with easeOutExpo ---
+(function() {
+  const origAnimCounter = window.animateCounter;
+  if (typeof origAnimCounter === 'function') return; // already patched
+  window.animateCounterPremium = function(el, target, suffix) {
+    suffix = suffix || '';
+    const duration = 2200;
+    const start = performance.now();
+    function step(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 4); // easeOutQuart
+      const current = Math.floor(ease * target);
+      el.textContent = current.toLocaleString() + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  };
+})();
+
 </script>
 </body>
 </html>
