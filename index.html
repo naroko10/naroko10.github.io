@@ -478,7 +478,32 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 }
 
 @media (max-width:900px) {
-  .live-indicator { top:76px; bottom:auto; right:16px; }
+  .live-indicator {
+    top:116px; bottom:auto; right:16px;
+    padding:7px 12px;
+    gap:7px;
+    border-radius:999px;
+  }
+  .live-dot-container {
+    width:8px; height:8px;
+  }
+  .live-dot {
+    width:8px; height:8px;
+  }
+  .live-pulse {
+    inset:-3px;
+    border-width:1.5px;
+  }
+  .live-label {
+    font-size:8px;
+    letter-spacing:1.8px;
+  }
+  .live-tiktok-icon {
+    width:11px; height:11px;
+  }
+  .live-indicator.mobile-home-hidden {
+    display:none !important;
+  }
 }
 
 /* ===== ABOUT PAGE ===== */
@@ -2805,8 +2830,16 @@ navigateTo = function(pageId) {
 
   if (!indicator) return;
 
+  function syncMobileHomeLiveIndicator() {
+    const isMobile = window.innerWidth <= 900;
+    const homePage = document.getElementById('page-home');
+    const isHomeActive = !!(homePage && homePage.classList.contains('active'));
+    indicator.classList.toggle('mobile-home-hidden', isMobile && !isHomeActive);
+  }
+
   setTimeout(function() {
     indicator.classList.add('visible');
+    syncMobileHomeLiveIndicator();
   }, 2000);
 
   let lastKnownStatus = null;
@@ -2901,11 +2934,23 @@ navigateTo = function(pageId) {
   setTimeout(checkLiveStatus, 1500);
   setInterval(checkLiveStatus, CHECK_INTERVAL);
 
+  const previousNavigateTo = window.navigateTo;
+  if (typeof previousNavigateTo === 'function') {
+    window.navigateTo = function(pageId) {
+      previousNavigateTo(pageId);
+      setTimeout(syncMobileHomeLiveIndicator, 450);
+    };
+  }
+
+  window.addEventListener('resize', syncMobileHomeLiveIndicator);
   document.addEventListener('visibilitychange', function() {
     if (!document.hidden) {
       setTimeout(checkLiveStatus, 1000);
+      setTimeout(syncMobileHomeLiveIndicator, 1000);
     }
   });
+
+  syncMobileHomeLiveIndicator();
 })();
 
 </script>
