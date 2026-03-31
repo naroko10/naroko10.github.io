@@ -206,7 +206,7 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 .hero-franco-bg {
   position:absolute; inset:0;
   background-size:cover; background-position:center 20%;
-  filter:brightness(0.8) saturate(1);
+  filter:brightness(1) saturate(1.1);
   transform:scale(1.05);
   animation: hero-drift 20s ease-in-out infinite alternate;
 }
@@ -217,8 +217,8 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 .hero-overlay {
   position:absolute; inset:0;
   background:
-    linear-gradient(90deg,rgba(6,6,12,0.95) 0%,rgba(6,6,12,0.6) 40%,rgba(6,6,12,0.3) 70%,rgba(6,6,12,0.7) 100%),
-    linear-gradient(180deg,transparent 50%,rgba(6,6,12,0.95) 100%);
+    linear-gradient(90deg,rgba(6,6,12,0.92) 0%,rgba(6,6,12,0.5) 40%,rgba(6,6,12,0.2) 70%,rgba(6,6,12,0.6) 100%),
+    linear-gradient(180deg,transparent 50%,rgba(6,6,12,0.92) 100%);
 }
 .hero-particles {
   position:absolute; inset:0; overflow:hidden; pointer-events:none;
@@ -358,6 +358,127 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 @keyframes fadeInScale {
   from { opacity:0; transform:scale(0.95); }
   to { opacity:1; transform:scale(1); }
+}
+
+/* ===== TIKTOK LIVE INDICATOR ===== */
+.live-indicator {
+  position:fixed; top:20px; right:20px; z-index:1000;
+  display:flex; align-items:center; gap:10px;
+  padding:10px 20px;
+  background:rgba(10,10,18,0.85);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:50px;
+  cursor:pointer;
+  text-decoration:none;
+  transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+  opacity:0; transform:translateY(-20px);
+  pointer-events:none;
+}
+.live-indicator.visible {
+  opacity:1; transform:translateY(0);
+  pointer-events:all;
+}
+.live-indicator:hover {
+  transform:translateY(-2px);
+  border-color:rgba(255,255,255,0.15);
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+.live-indicator.is-live {
+  border-color:rgba(238,29,82,0.4);
+  box-shadow:0 0 20px rgba(238,29,82,0.15);
+}
+.live-indicator.is-live:hover {
+  box-shadow:0 0 30px rgba(238,29,82,0.25);
+}
+.live-dot-container {
+  position:relative;
+  width:10px; height:10px;
+}
+.live-dot {
+  width:10px; height:10px;
+  border-radius:50%;
+  background:#555;
+  transition:background 0.4s ease;
+}
+.live-indicator.is-live .live-dot {
+  background:#ee1d52;
+  box-shadow:0 0 8px #ee1d52;
+}
+.live-pulse {
+  position:absolute; inset:-4px;
+  border-radius:50%;
+  border:2px solid #ee1d52;
+  opacity:0;
+  animation:none;
+}
+.live-indicator.is-live .live-pulse {
+  animation:live-pulse-anim 2s ease-out infinite;
+}
+@keyframes live-pulse-anim {
+  0% { transform:scale(0.8); opacity:0.8; }
+  100% { transform:scale(2.2); opacity:0; }
+}
+.live-label {
+  font-family:'Orbitron',sans-serif;
+  font-size:10px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase;
+  color:var(--text-muted);
+  transition:color 0.4s ease;
+}
+.live-indicator.is-live .live-label {
+  color:#ee1d52;
+}
+.live-tiktok-icon {
+  width:14px; height:14px;
+  fill:var(--text-muted);
+  transition:fill 0.4s ease;
+}
+.live-indicator.is-live .live-tiktok-icon {
+  fill:#fff;
+}
+
+/* Hero live banner - shown on home page when live */
+.hero-live-banner {
+  display:none;
+  align-items:center; gap:12px;
+  padding:12px 24px;
+  margin-bottom:24px;
+  background:linear-gradient(135deg,rgba(238,29,82,0.12),rgba(238,29,82,0.04));
+  border:1px solid rgba(238,29,82,0.25);
+  border-radius:50px;
+  animation:fadeInLeft 0.6s ease 0.3s both;
+}
+.hero-live-banner.active {
+  display:inline-flex;
+}
+.hero-live-banner .live-dot-wrap {
+  position:relative;
+  width:8px; height:8px;
+}
+.hero-live-banner .live-dot-inner {
+  width:8px; height:8px;
+  border-radius:50%;
+  background:#ee1d52;
+  box-shadow:0 0 8px #ee1d52;
+  animation:blink 1.5s ease-in-out infinite;
+}
+.hero-live-banner .live-dot-ring {
+  position:absolute; inset:-3px;
+  border-radius:50%;
+  border:1.5px solid #ee1d52;
+  animation:live-pulse-anim 2s ease-out infinite;
+}
+.hero-live-banner span {
+  font-family:'Orbitron',sans-serif;
+  font-size:10px; font-weight:700;
+  letter-spacing:3px;
+  color:#ee1d52;
+}
+
+@media (max-width:900px) {
+  .live-indicator { top:auto; bottom:20px; right:16px; }
 }
 
 /* ===== ABOUT PAGE ===== */
@@ -1496,6 +1617,16 @@ a, button, .nav-link, .lang-btn, .achieve-card, .squad-card, .platform-card, .mo
 <!-- PREMIUM: Custom Cursor -->
 <!-- PREMIUM: Noise/Grain Overlay -->
 <div class="noise-overlay"></div>
+
+<!-- TIKTOK LIVE INDICATOR (fixed) -->
+<a class="live-indicator" id="liveIndicator" href="https://www.tiktok.com/@naroko10/live" target="_blank" rel="noopener">
+  <div class="live-dot-container">
+    <div class="live-dot"></div>
+    <div class="live-pulse"></div>
+  </div>
+  <span class="live-label" id="liveLabel">Hors ligne</span>
+  <svg class="live-tiktok-icon" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.97a8.35 8.35 0 004.76 1.49V7.01a4.85 4.85 0 01-1-.32z"/></svg>
+</a>
 
 <noscript><style>body.lang-pending .app{opacity:1!important;visibility:visible!important;}body.lang-pending #loader{display:none!important;}</style></noscript>
 <!-- LOADER -->
@@ -2659,6 +2790,122 @@ navigateTo = function(pageId) {
     }
     requestAnimationFrame(step);
   };
+})();
+
+// ========== TIKTOK LIVE STATUS CHECKER ==========
+(function() {
+  const TIKTOK_USER = 'naroko10';
+  const STATUS_ENDPOINT = 'https://naroko.naroko.workers.dev/api/tiktok-live?username=' + encodeURIComponent(TIKTOK_USER);
+  const CHECK_INTERVAL = 60000; // Check every 60 seconds
+
+  const indicator = document.getElementById('liveIndicator');
+  const liveLabel = document.getElementById('liveLabel');
+  const heroLiveBanner = document.getElementById('heroLiveBanner');
+  const heroLiveText = document.getElementById('heroLiveText');
+
+  if (!indicator) return;
+
+  setTimeout(function() {
+    indicator.classList.add('visible');
+  }, 2000);
+
+  let lastKnownStatus = null;
+
+  const liveTexts = {
+    fr: { live: 'EN LIVE', offline: 'Hors ligne', unknown: 'Statut indisponible', heroLive: 'EN LIVE SUR TIKTOK' },
+    en: { live: 'LIVE NOW', offline: 'Offline', unknown: 'Status unavailable', heroLive: 'LIVE ON TIKTOK' },
+    ar: { live: 'مباشر', offline: 'غير متصل', unknown: 'الحالة غير متاحة', heroLive: 'مباشر على تيك توك' }
+  };
+
+  function getLang() {
+    try {
+      const cached = localStorage.getItem('naroko_geo_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed.countryCode) {
+          const arab = ['MA','DZ','TN','EG','SA','AE','IQ','JO','LB','LY','SD','SY','YE','BH','KW','OM','QA'];
+          if (arab.includes(parsed.countryCode)) return 'ar';
+        }
+      }
+    } catch (e) {}
+    return document.documentElement.lang || 'fr';
+  }
+
+  function setIndicatorLabel(text) {
+    if (liveLabel) liveLabel.textContent = text;
+  }
+
+  function setHeroActive(isActive, heroText) {
+    if (!heroLiveBanner) return;
+    if (isActive) {
+      heroLiveBanner.classList.add('active');
+      if (heroLiveText && heroText) heroLiveText.textContent = heroText;
+    } else {
+      heroLiveBanner.classList.remove('active');
+    }
+  }
+
+  function updateLiveStatus(isLive) {
+    lastKnownStatus = isLive;
+    const texts = liveTexts[getLang()] || liveTexts.fr;
+
+    if (isLive) {
+      indicator.classList.add('is-live');
+      setIndicatorLabel(texts.live);
+      setHeroActive(true, texts.heroLive);
+    } else {
+      indicator.classList.remove('is-live');
+      setIndicatorLabel(texts.offline);
+      setHeroActive(false);
+    }
+  }
+
+  function setUnknownStatus() {
+    const texts = liveTexts[getLang()] || liveTexts.fr;
+    indicator.classList.remove('is-live');
+    setIndicatorLabel(texts.unknown);
+    setHeroActive(false);
+  }
+
+  async function checkLiveStatus() {
+    try {
+      const response = await fetch(STATUS_ENDPOINT, {
+        method: 'GET',
+        cache: 'no-store'
+      });
+
+      if (!response.ok) {
+        if (lastKnownStatus === null) {
+          setUnknownStatus();
+        }
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!data || data.ok !== true || typeof data.isLive !== 'boolean') {
+        if (lastKnownStatus === null) {
+          setUnknownStatus();
+        }
+        return;
+      }
+
+      updateLiveStatus(data.isLive);
+    } catch (error) {
+      if (lastKnownStatus === null) {
+        setUnknownStatus();
+      }
+    }
+  }
+
+  setTimeout(checkLiveStatus, 1500);
+  setInterval(checkLiveStatus, CHECK_INTERVAL);
+
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+      setTimeout(checkLiveStatus, 1000);
+    }
+  });
 })();
 
 </script>
