@@ -477,64 +477,80 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
   color:#ee1d52;
 }
 
-.live-indicator.home-only-hidden {
+.live-indicator.home-only-hidden,
+.live-indicator.mobile-live-hidden {
   opacity:0 !important;
   pointer-events:none !important;
   transform:translateY(-14px) !important;
 }
 
 @media (max-width:1024px) {
-  body.mobile-menu-open .live-indicator {
+  body.mobile-menu-open .live-indicator,
+  .mobile-overlay.open ~ .live-indicator {
     opacity:0 !important;
     pointer-events:none !important;
     transform:translateY(-10px) !important;
   }
   .live-indicator {
-    top:96px;
-    right:12px;
+    top:124px;
+    right:10px;
     bottom:auto;
     left:auto;
     z-index:997;
-    padding:7px 11px;
-    gap:6px;
-    max-width:calc(100vw - 24px);
+    padding:5px 8px;
+    gap:5px;
+    border-radius:40px;
+    max-width:calc(100vw - 20px);
   }
   .live-dot-container {
-    width:8px;
-    height:8px;
+    width:7px;
+    height:7px;
   }
   .live-dot {
-    width:8px;
-    height:8px;
+    width:7px;
+    height:7px;
   }
   .live-pulse {
-    inset:-3px;
-    border-width:1.5px;
+    inset:-2px;
+    border-width:1.2px;
   }
   .live-label {
-    font-size:8px;
-    letter-spacing:1.6px;
+    font-size:6px;
+    letter-spacing:1px;
   }
   .live-tiktok-icon {
-    width:11px;
-    height:11px;
+    width:8px;
+    height:8px;
   }
 }
 
 @media (max-width:640px) {
   .live-indicator {
-    top:102px;
-    right:10px;
-    padding:6px 10px;
-    gap:6px;
+    top:138px;
+    right:8px;
+    padding:4px 7px;
+    gap:4px;
+    border-radius:36px;
+  }
+  .live-dot-container {
+    width:6px;
+    height:6px;
+  }
+  .live-dot {
+    width:6px;
+    height:6px;
+  }
+  .live-pulse {
+    inset:-2px;
+    border-width:1px;
   }
   .live-label {
-    font-size:7px;
-    letter-spacing:1.3px;
+    font-size:5px;
+    letter-spacing:0.8px;
   }
   .live-tiktok-icon {
-    width:10px;
-    height:10px;
+    width:7px;
+    height:7px;
   }
 }
 
@@ -2665,12 +2681,23 @@ function navigateTo(pageId) {
 document.getElementById('mobileMenuBtn').addEventListener('click', () => {
   document.getElementById('mobileOverlay').classList.add('open');
   document.body.classList.add('mobile-menu-open');
+  if (typeof syncHomeLiveIndicatorVisibility === 'function') {
+    syncHomeLiveIndicatorVisibility();
+  }
 });
 document.getElementById('mobileClose').addEventListener('click', closeMobile);
 function closeMobile() {
   document.getElementById('mobileOverlay').classList.remove('open');
   document.body.classList.remove('mobile-menu-open');
+  if (typeof syncHomeLiveIndicatorVisibility === 'function') {
+    syncHomeLiveIndicatorVisibility();
+  }
 }
+window.addEventListener('resize', function() {
+  if (typeof syncHomeLiveIndicatorVisibility === 'function') {
+    syncHomeLiveIndicatorVisibility();
+  }
+});
 
 // === PARTICLES ===
 const particles = document.getElementById('heroParticles');
@@ -2730,12 +2757,19 @@ observeCounters();
 function syncHomeLiveIndicatorVisibility(pageId) {
   const indicator = document.getElementById('liveIndicator');
   if (!indicator) return;
+
   let targetPage = pageId;
   if (!targetPage) {
     const activePage = document.querySelector('.page.active');
     targetPage = activePage ? activePage.id.replace('page-', '') : 'home';
   }
+
+  const isMobile = window.matchMedia('(max-width: 1024px)').matches;
+  const overlay = document.getElementById('mobileOverlay');
+  const menuOpen = document.body.classList.contains('mobile-menu-open') || (overlay && overlay.classList.contains('open'));
+
   indicator.classList.toggle('home-only-hidden', targetPage !== 'home');
+  indicator.classList.toggle('mobile-live-hidden', isMobile && menuOpen);
 }
 
 // Re-observe counters when navigating pages (reset & replay)
