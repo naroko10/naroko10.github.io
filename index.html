@@ -484,21 +484,58 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 }
 
 @media (max-width:1024px) {
+  body.mobile-menu-open .live-indicator {
+    opacity:0 !important;
+    pointer-events:none !important;
+    transform:translateY(-10px) !important;
+  }
   .live-indicator {
-    top:78px;
+    top:96px;
     right:12px;
     bottom:auto;
     left:auto;
-    z-index:1201;
-    padding:9px 14px;
-    gap:8px;
+    z-index:997;
+    padding:7px 11px;
+    gap:6px;
     max-width:calc(100vw - 24px);
   }
-  .live-label { font-size:9px; letter-spacing:2px; }
+  .live-dot-container {
+    width:8px;
+    height:8px;
+  }
+  .live-dot {
+    width:8px;
+    height:8px;
+  }
+  .live-pulse {
+    inset:-3px;
+    border-width:1.5px;
+  }
+  .live-label {
+    font-size:8px;
+    letter-spacing:1.6px;
+  }
+  .live-tiktok-icon {
+    width:11px;
+    height:11px;
+  }
 }
 
 @media (max-width:640px) {
-  .live-indicator { top:74px; right:10px; padding:8px 12px; }
+  .live-indicator {
+    top:102px;
+    right:10px;
+    padding:6px 10px;
+    gap:6px;
+  }
+  .live-label {
+    font-size:7px;
+    letter-spacing:1.3px;
+  }
+  .live-tiktok-icon {
+    width:10px;
+    height:10px;
+  }
 }
 
 /* ===== ABOUT PAGE ===== */
@@ -2627,10 +2664,12 @@ function navigateTo(pageId) {
 // === MOBILE ===
 document.getElementById('mobileMenuBtn').addEventListener('click', () => {
   document.getElementById('mobileOverlay').classList.add('open');
+  document.body.classList.add('mobile-menu-open');
 });
 document.getElementById('mobileClose').addEventListener('click', closeMobile);
 function closeMobile() {
   document.getElementById('mobileOverlay').classList.remove('open');
+  document.body.classList.remove('mobile-menu-open');
 }
 
 // === PARTICLES ===
