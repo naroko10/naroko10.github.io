@@ -478,7 +478,7 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
 }
 
 @media (max-width:900px) {
-  .live-indicator { top:auto; bottom:20px; right:16px; }
+  .live-indicator { top:78px; bottom:auto; right:12px; }
 }
 
 /* ===== ABOUT PAGE ===== */
@@ -1349,6 +1349,89 @@ body.lang-ready .app { opacity:1; visibility:visible; transition:opacity 0.3s ea
   .achieve-hero-inner { flex-direction:column; text-align:center; }
   .achieve-rank { font-size:72px; }
   .about-features { grid-template-columns:1fr; }
+}
+
+/* ===== MOBILE CLEANUP OVERRIDES ===== */
+.live-indicator.home-only-hidden {
+  opacity:0 !important;
+  pointer-events:none !important;
+  transform:translateY(-14px) !important;
+}
+
+@media (max-width:1024px) {
+  html, body { overflow-x:hidden; }
+  .live-indicator {
+    top:78px;
+    right:12px;
+    bottom:auto;
+    left:auto;
+    z-index:1201;
+    padding:9px 14px;
+    gap:8px;
+    max-width:calc(100vw - 24px);
+  }
+  .live-label { font-size:9px; letter-spacing:2px; }
+  .page-header-section { padding:98px 20px 48px; }
+  .page-tag { font-size:10px; letter-spacing:2px; }
+  .page-title { font-size:clamp(32px, 9vw, 48px); line-height:1.05; letter-spacing:1px; }
+  .page-subtitle { font-size:14px; line-height:1.75; max-width:100%; }
+  .hero-content { padding:96px 20px 44px; max-width:none; }
+  .hero-rank-badge { margin-bottom:20px; padding:8px 14px; }
+  .hero-rank-badge span { font-size:10px; letter-spacing:2px; }
+  .hero-name { font-size:clamp(42px, 14vw, 68px); letter-spacing:2px; }
+  .hero-name .line2 { letter-spacing:6px; }
+  .hero-desc { font-size:15px; line-height:1.7; margin-top:20px; max-width:100%; }
+  .hero-stats-row { gap:14px; margin-top:28px; }
+  .hero-stat-item {
+    width:100%;
+    padding:14px 16px;
+    border-radius:16px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  .hero-stat-num { font-size:26px; }
+  .hero-cta-row { gap:12px; margin-top:28px; }
+  .cta-btn { width:100%; justify-content:center; padding:14px 18px; font-size:12px; letter-spacing:1.5px; }
+  .about-layout, .achieve-content, .squad-content, .team-content, .platforms-content {
+    padding:0 20px 56px;
+    gap:28px;
+  }
+  .about-features { gap:12px; }
+  .about-feature { padding:14px; min-height:unset; }
+  .achieve-hero-card, .squad-group, .team-card, .platform-card, .connect-cta, .about-img-hover { border-radius:20px; }
+  .squad-emblem-section { padding:24px; gap:22px; }
+  .squad-group { padding:20px; }
+  .team-card { padding:22px 18px; }
+  .platform-card { padding:24px 20px; }
+  .platform-icon { width:68px; height:68px; }
+  .platform-name { font-size:20px; }
+  .platform-handle { font-size:14px; word-break:break-word; }
+  .platform-cta-btn { width:100%; justify-content:center; padding:12px 18px; }
+  .connect-cta { margin-top:36px; padding:28px 20px; }
+  .connect-cta h3 { font-size:20px; }
+  .connect-cta p { font-size:14px; line-height:1.7; }
+  .mobile-overlay { padding:24px 18px; }
+  .mobile-overlay .nav-item {
+    width:min(92vw, 320px);
+    text-align:center;
+    padding:14px 20px;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;
+    background:rgba(255,255,255,0.03);
+  }
+  .site-footer { padding:24px 20px 34px; }
+  .footer-left { font-size:12px; letter-spacing:2px; }
+  .footer-right { font-size:12px; line-height:1.6; }
+}
+
+@media (max-width:640px) {
+  .live-indicator { top:74px; right:10px; padding:8px 12px; }
+  .hero-content { padding:92px 16px 40px; }
+  .page-header-section { padding:92px 16px 40px; }
+  .about-layout, .achieve-content, .squad-content, .team-content, .platforms-content { padding:0 16px 44px; }
+  .hero-stat-item { padding:12px 14px; }
+  .squad-group, .team-card, .platform-card { padding:18px 16px; }
+  .connect-cta { padding:24px 16px; }
 }
 
 
@@ -2668,11 +2751,24 @@ function observeCounters() {
 }
 observeCounters();
 
+function syncHomeLiveIndicatorVisibility(pageId) {
+  const indicator = document.getElementById('liveIndicator');
+  if (!indicator) return;
+  let targetPage = pageId;
+  if (!targetPage) {
+    const activePage = document.querySelector('.page.active');
+    targetPage = activePage ? activePage.id.replace('page-', '') : 'home';
+  }
+  indicator.classList.toggle('home-only-hidden', targetPage !== 'home');
+}
+
 // Re-observe counters when navigating pages (reset & replay)
 const origNavigateTo = navigateTo;
 navigateTo = function(pageId) {
+  syncHomeLiveIndicatorVisibility(pageId);
   origNavigateTo(pageId);
   setTimeout(() => {
+    syncHomeLiveIndicatorVisibility(pageId);
     document.querySelectorAll('#page-' + pageId + ' .counter[data-target]').forEach(el => {
       delete el.dataset.done;
       el.textContent = '0';
@@ -2680,6 +2776,7 @@ navigateTo = function(pageId) {
     });
   }, 500);
 };
+syncHomeLiveIndicatorVisibility('home');
 
 
 // ========== PREMIUM ANIMATIONS ==========
@@ -2807,6 +2904,9 @@ navigateTo = function(pageId) {
 
   setTimeout(function() {
     indicator.classList.add('visible');
+    if (typeof syncHomeLiveIndicatorVisibility === 'function') {
+      syncHomeLiveIndicatorVisibility();
+    }
   }, 2000);
 
   let lastKnownStatus = null;
